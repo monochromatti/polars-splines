@@ -1,0 +1,8 @@
+__pycache__
+.so
+.DS_Store
+target/
+*.code-workspace
+.direnv
+.devenv
+.envrc
