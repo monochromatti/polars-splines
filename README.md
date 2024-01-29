@@ -25,3 +25,11 @@ dfi = df.select(
 ).with_columns(xi)
 
 ```
+
+## Installation
+
+Install with `pip`,
+```
+pip install polars-splines
+```
+or build from source with [`maturin`](https://github.com/PyO3/maturin).
