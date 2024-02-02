@@ -4,7 +4,7 @@ A simple [extension plugin](https://github.com/pola-rs/pyo3-polars) for [py-pola
 
 ## Usage
 
-The expression plugin adds `splines` to the expression namespace. This contains the method `spline` which acts on a `Series` of `Struct` type. The two fields corresponds to the (x, y) pairs to be interpolated. The `spline` method accepts a keyword argument `xi` for the interpolation points.
+The expression plugin adds `splines` to the expression namespace. This contains the method `spline` which acts on columns of `Struct` type. The two fields corresponds to the (x, y) pairs to be interpolated. The `spline` method accepts a keyword argument `xi` for the interpolation points.
 
 For example,
 
