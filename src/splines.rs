@@ -26,12 +26,19 @@ fn spline(inputs: &[Series], kwargs: SplineKwargs) -> PolarsResult<Series> {
             let x: Vec<f64> = fields[0].f64()?.into_iter().flatten().collect();
             let y: Vec<f64> = fields[1].f64()?.into_iter().flatten().collect();
 
-            let interpolator: Interpolation<f64, f64> = match kwargs.method.as_deref() {
-                Some("linear") => Interpolation::Linear,
-                Some("cosine") => Interpolation::Cosine,
-                Some("catmullrom") | None => Interpolation::CatmullRom,
-                _ => Interpolation::Linear,
-            };
+            let interpolator = match kwargs.method.as_deref() {
+                Some("linear") => Ok(Interpolation::Linear),
+                Some("cosine") => Ok(Interpolation::Cosine),
+                Some("catmullrom") => Ok(Interpolation::CatmullRom),
+                None => Err(PolarsError::InvalidOperation(
+                    "Method not specified. Please specify a valid method: 'linear', 'cosine', or 'catmullrom'.".into(),
+                )),
+                Some(other) => Err(PolarsError::InvalidOperation(format!(
+                    "Invalid method: {}. Valid methods are: 'linear', 'cosine', and 'catmullrom'.",
+                    other
+                ).into())),
+            }?;
+
             let keys: Vec<Key<f64, f64>> = x
                 .into_iter()
                 .zip(y.into_iter())
@@ -39,12 +46,17 @@ fn spline(inputs: &[Series], kwargs: SplineKwargs) -> PolarsResult<Series> {
                 .collect();
 
             let spline = Spline::from_vec(keys);
-            let yi_iter = kwargs.xi.iter();
             let yi: Vec<Option<f64>> = match kwargs.fill_value {
-                Some(fill_val) => yi_iter
+                Some(fill_val) => kwargs
+                    .xi
+                    .iter()
                     .map(|&xi_val| Some(spline.sample(xi_val).map_or(fill_val, |v| v)))
                     .collect(),
-                None => yi_iter.map(|&xi_val| spline.sample(xi_val)).collect(),
+                None => kwargs
+                    .xi
+                    .iter()
+                    .map(|&xi_val| spline.sample(xi_val))
+                    .collect(),
             };
 
             Ok(Series::new(fields[1].name(), yi)

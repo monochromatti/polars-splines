@@ -10,9 +10,7 @@ class SplinesNamespace:
     def __init__(self, expr: pl.Expr):
         self._expr = expr
 
-    def spline(self, xi=None, method="linear", fill_value=None) -> pl.Expr:
-        if xi is None:
-            raise ValueError("Interpolation points `xi` must be provided")
+    def spline(self, xi, method="linear", fill_value=None) -> pl.Expr:
         return self._expr._register_plugin(
             lib=lib,
             symbol="spline",
