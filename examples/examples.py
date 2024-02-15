@@ -23,9 +23,7 @@ if __name__ == "__main__":
     def apply_spline(group, xi, value_vars, id_vars):
         id_vals = group.select(pl.col(*id_vars).first())
         group = group.select(
-            pl.struct("x", col)
-            .splines.spline(xi=xi.to_list(), fill_value=0.0)
-            .alias(col)
+            pl.struct("x", col).splines.spline(xi=list(xi), fill_value=0.0).alias(col)
             for col in value_vars
         ).with_columns(xi, *id_vals)
         return group

@@ -1,5 +1,6 @@
 use polars::error::polars_err;
 use polars::prelude::{DataType, NamedFrom, PolarsError, PolarsResult, Series};
+use polars_plan::dsl::FieldsMapper;
 use pyo3_polars::derive::polars_expr;
 use serde::Deserialize;
 use splines::{Interpolation, Key, Spline};
@@ -11,7 +12,11 @@ struct SplineKwargs {
     method: Option<String>,
 }
 
-#[polars_expr(output_type=Float64)]
+fn spline_output(input_fields: &[Field]) -> PolarsResult<Field> {
+    FieldsMapper::new(input_fields).map_to_float_dtype()
+}
+
+#[polars_expr(output_type=spline_output)]
 fn spline(inputs: &[Series], kwargs: SplineKwargs) -> PolarsResult<Series> {
     if inputs.len() != 1 {
         return Err(PolarsError::InvalidOperation(
@@ -50,7 +55,7 @@ fn spline(inputs: &[Series], kwargs: SplineKwargs) -> PolarsResult<Series> {
                 Some(fill_val) => kwargs
                     .xi
                     .iter()
-                    .map(|&xi_val| Some(spline.sample(xi_val).map_or(fill_val, |v| v)))
+                    .map(|&xi_val| Some(spline.sample(xi_val).map_or_else(fill_val, |v| v)))
                     .collect(),
                 None => kwargs
                     .xi
@@ -58,6 +63,14 @@ fn spline(inputs: &[Series], kwargs: SplineKwargs) -> PolarsResult<Series> {
                     .map(|&xi_val| spline.sample(xi_val))
                     .collect(),
             };
+
+            // Force endpoints to match the `y` if `x` and `xi` limits match
+            if x.first() == kwargs.xi.first() {
+                yi[0] = Some(y[0]);
+            }
+            if x.last() == kwargs.xi.last() {
+                yi[yi.len() - 1] = Some(y[y.len() - 1]);
+            }
 
             Ok(Series::new(fields[1].name(), yi)
                 .cast(fields[1].dtype())
