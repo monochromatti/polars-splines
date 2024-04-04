@@ -1,5 +1,6 @@
 import polars as pl
 from polars.plugins import register_plugin_function
+from typing import Iterable
 from pathlib import Path
 
 
@@ -9,8 +10,12 @@ class SplinesNamespace:
         self._expr = expr
 
     def spline(
-        self, xi: list[float], method="linear", fill_value: float = None
+        self, xi: Iterable[float] | float, method="linear", fill_value: float = None
     ) -> pl.Expr:
+        if isinstance(xi, float):
+            xi = [xi]
+        elif not isinstance(xi, list):
+            xi = list(xi)
         return register_plugin_function(
             plugin_path=Path(__file__).parent,
             function_name="spline",
