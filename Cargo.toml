@@ -11,8 +11,8 @@ crate-type = ["cdylib"]
 polars = { version = "*", default-features = false, features = [
     "lazy",
     "dtype-struct",
-    "polars_plan"
 ] }
+pyo3 = { version = "*", default-features = false, features = ["extension-module"] }
 pyo3-polars = { version = "*", default-features = false, features = [
     "lazy",
     "derive",
@@ -21,5 +21,6 @@ serde = { version = "*", default-features = false, features = ["derive"] }
 splines = { version = "*" }
 
 [profile.release]
-opt-level = 'z'
+opt-level = "z"
 lto = true
+codegen-units = 1

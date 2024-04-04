@@ -1,8 +1,6 @@
 import polars as pl
-from polars.utils.udfs import _get_shared_lib_location
-
-# Boilerplate needed to inform Polars of the location of binary wheel.
-lib = _get_shared_lib_location(__file__)
+from polars.plugins import register_plugin_function
+from pathlib import Path
 
 
 @pl.api.register_expr_namespace("splines")
@@ -10,10 +8,13 @@ class SplinesNamespace:
     def __init__(self, expr: pl.Expr):
         self._expr = expr
 
-    def spline(self, xi, method="linear", fill_value=None) -> pl.Expr:
-        return self._expr._register_plugin(
-            lib=lib,
-            symbol="spline",
-            is_elementwise=True,
+    def spline(
+        self, xi: list[float], method="linear", fill_value: float = None
+    ) -> pl.Expr:
+        return register_plugin_function(
+            plugin_path=Path(__file__).parent,
+            function_name="spline",
+            args=self._expr,
+            is_elementwise=False,
             kwargs={"xi": xi, "method": method, "fill_value": fill_value},
         )
