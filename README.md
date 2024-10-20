@@ -6,7 +6,7 @@ A simple [extension plugin](https://github.com/pola-rs/pyo3-polars) for [polars]
 Install with `pip` or `uv` from [PyPI](https://pypi.org/project/polars-splines/), or build from source with [`maturin`](https://github.com/PyO3/maturin).
 
 ## Usage
-The expression plugin adds `spl` to the expression namespace. This contains the method `spline` which acts on columns of `Struct` type. The two fields corresponds to the (x, y) pairs to be interpolated. The `interpolate` method accepts a keyword argument `xi` for the interpolation points.
+The expression plugin adds `spl` to the expression namespace. This contains the method `interpolate` which acts on columns of `Struct` type, with fields corresponding to the *points* on the graph of a function $f$, i.e. $(x, f(x))$. The `interpolate` method takes an argument `xi` containing the evaluation points of the spline.
 
 For example,
 
