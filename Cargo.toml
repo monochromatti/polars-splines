@@ -1,0 +1,30 @@
+[package]
+name = "polars_splines"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "polars_splines"
+crate-type = ["cdylib"]
+
+[dependencies]
+polars = { version = "*", default-features = false, features = [
+    "lazy",
+    "dtype-struct",
+] }
+pyo3 = { version = "*", default-features = false, features = ["extension-module"] }
+pyo3-polars = { version = "*", default-features = false, features = [
+    "lazy",
+    "derive",
+] }
+serde = { version = "*", default-features = false, features = ["derive"] }
+splines = { version = "*" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+
+[features]
+default = ["python"]
+python = []
