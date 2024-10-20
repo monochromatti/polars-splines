@@ -2,6 +2,7 @@
 name = "polars_splines"
 version = "0.1.2"
 edition = "2021"
+readme = "README.md"
 
 [lib]
 name = "polars_splines"
