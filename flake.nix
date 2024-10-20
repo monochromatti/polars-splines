@@ -14,7 +14,10 @@
       perSystem = { config, self', inputs', pkgs, system, ... }: {
         devenv.shells.default = {
           packages = with pkgs; [ maturin ];
-          languages.python.enable = true;
+          languages.python = {
+            enable = true;
+            uv.enable = true;
+          };
           languages.rust.enable = true;
         };
       };

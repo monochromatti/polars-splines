@@ -17,6 +17,11 @@ dependencies = ["polars>=1.7,<2"]
 sdist-include = ["LICENSE", "README.md"]
 features = ["pyo3/extension-module"]
 
+[tool.uv]
+dev-dependencies = [
+    "mkdocs-material>=9.5.42",
+]
+
 [build-system]
 requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"
