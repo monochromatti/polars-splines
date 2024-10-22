@@ -15,7 +15,8 @@ class SplinesNamespace:
         self,
         xi: Iterable[int | float] | float,
         method="linear",
-        fill_value: float = None,
+        *,
+        fill_value: float | None = None,
     ) -> pl.Expr:
         return register_plugin_function(
             function_name="interpolate",
@@ -31,14 +32,19 @@ class SplinesNamespace:
             },
         )
 
-    def _cast_xi(self, xi: Iterable[int | float] | float) -> list:
-        if isinstance(xi, float):
-            xi = [xi]
+    def _cast_xi(self, xi: Iterable[float] | float) -> list:
+        if isinstance(xi, list):
+            return xi
+        elif isinstance(xi, int | float):
+            return [xi]
         elif not isinstance(xi, list):
-            xi = list(xi)
+            return list(xi)
+        print(xi)
+        raise ValueError("`xi` must be iterable")
 
-    def _verify_method(self, method: str) -> None:
+    def _verify_method(self, method: str) -> str:
         if method not in self.implemented_methods:
             raise ValueError(
                 f"Method {method} is not implemented. Choose one of {self.implemented_methods}"
             )
+        return method
