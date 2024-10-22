@@ -23,6 +23,7 @@ class SplinesNamespace:
             args=self.expr,
             is_elementwise=False,
             returns_scalar = False,
+            changes_length = True,
             kwargs={
                 "xi": self._cast_xi(xi),
                 "method": self._verify_method(method),
