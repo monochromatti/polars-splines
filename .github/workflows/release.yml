@@ -180,7 +180,7 @@ jobs:
   publish:
       name: Publish to PyPI
       if: startsWith(github.ref, 'refs/tags/')
-      needs: [windows, macos] # [linux, musllinux, windows, macos]
+      needs: [linux, musllinux, windows, macos]
       runs-on: ubuntu-latest
       environment:
         name: release
@@ -194,5 +194,7 @@ jobs:
             path: dist
         - name: Move wheels to dist
           run: find dist/ -type f -name "*.whl" -exec mv {} dist/ \; && find dist/ -type d -empty -delete
-        # - name: Publish distribution 📦 to PyPI
-        #   uses: pypa/gh-action-pypi-publish@release/v1
+        - name: Show all files recursively
+          run: ls -R .
+        - name: Publish distribution 📦 to PyPI
+          uses: pypa/gh-action-pypi-publish@release/v1

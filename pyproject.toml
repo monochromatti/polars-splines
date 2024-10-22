@@ -2,7 +2,6 @@
 name = "polars-splines"
 description = "A polars expression plugin for splines"
 readme = "README.md"
-requires-python = ">=3.10"
 authors = [{ name = "Mattias Matthiesen", email = "mattmatthi@gmail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
@@ -10,7 +9,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 keywords = ["splines", "interpolation", "polars"]
-dynamic = ["version"]
+version = "0.1.0"
+requires-python = ">=3.10"
 dependencies = ["polars>=1.7,<2"]
 
 [tool.maturin]
