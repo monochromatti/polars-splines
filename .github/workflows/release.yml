@@ -2,80 +2,77 @@ name: release
 
 on:
   push:
-      # tags:
-      #   - '*'
-
-permissions:
-  contents: read
+      tags:
+        - '*'
 
 jobs:
-  # linux:
-  #   name: Build wheels for Linux
-  #   runs-on: ${{ matrix.platform.runner }}
-  #   strategy:
-  #     matrix:
-  #       platform:
-  #         - runner: ubuntu-latest
-  #           target: x86_64
-  #         - runner: ubuntu-latest
-  #           target: x86
-  #         - runner: ubuntu-latest
-  #           target: aarch64
-  #         - runner: ubuntu-latest
-  #           target: armv7
-  #         - runner: ubuntu-latest
-  #           target: s390x
-  #         - runner: ubuntu-latest
-  #           target: ppc64le
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-python@v5
-  #       with:
-  #         python-version: 3.x
-  #     - name: Build wheels
-  #       uses: PyO3/maturin-action@v1
-  #       with:
-  #         target: ${{ matrix.platform.target }}
-  #         args: --release --out dist --find-interpreter
-  #         sccache: 'true'
-  #         manylinux: auto
-  #     - name: Upload wheels
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: wheels
-  #         path: dist/*.whl
+  linux:
+    name: Build wheels for Linux
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64
+          - runner: ubuntu-latest
+            target: x86
+          - runner: ubuntu-latest
+            target: aarch64
+          - runner: ubuntu-latest
+            target: armv7
+          - runner: ubuntu-latest
+            target: s390x
+          - runner: ubuntu-latest
+            target: ppc64le
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist --find-interpreter
+          sccache: 'true'
+          manylinux: auto
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.platform.target }}
+          path: dist/*.whl
 
-  # musllinux:
-  #   name: Build wheels for MuslLinux
-  #   runs-on: ${{ matrix.platform.runner }}
-  #   strategy:
-  #     matrix:
-  #       platform:
-  #         - runner: ubuntu-latest
-  #           target: x86_64
-  #         - runner: ubuntu-latest
-  #           target: x86
-  #         - runner: ubuntu-latest
-  #           target: aarch64
-  #         - runner: ubuntu-latest
-  #           target: armv7
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-python@v5
-  #       with:
-  #         python-version: 3.x
-  #     - name: Build wheels
-  #       uses: PyO3/maturin-action@v1
-  #       with:
-  #         target: ${{ matrix.platform.target }}
-  #         args: --release --out dist --find-interpreter
-  #         sccache: 'true'
-  #         manylinux: musllinux_1_2
-  #     - name: Upload wheels
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: wheels
-  #         path: dist/*.whl
+  musllinux:
+    name: Build wheels for MuslLinux
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64
+          - runner: ubuntu-latest
+            target: x86
+          - runner: ubuntu-latest
+            target: aarch64
+          - runner: ubuntu-latest
+            target: armv7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist --find-interpreter
+          sccache: 'true'
+          manylinux: musllinux_1_2
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-musllinux-${{ matrix.platform.target }}
+          path: dist/*.whl
 
   windows:
     name: Build wheels for Windows
@@ -132,32 +129,32 @@ jobs:
           name: wheels-macos-${{ matrix.platform.target }}
           path: dist/*.whl
 
-  # release:
-  #   name: Release on GitHub
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   needs: [linux, musllinux, windows, macos]
-  #   steps:
-  #     - name: Download wheels
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         path: dist
-  #     - name: Tarball the wheels
-  #       run: tar -czf wheels.tar.gz dist/**/*.whl
-  #     - name: Create release
-  #       uses: softprops/action-gh-release@v1
-  #       with:
-  #         files: wheels.tar.gz
-  #         tag_name: ${{ github.ref }}
-  #         name: ${{ github.ref }}
-  #         body: ${{ github.event.release.body }}
-  #         draft: false
-  #         prerelease: false
+  release:
+    name: Release on GitHub
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [linux, musllinux, windows, macos]
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Tarball the wheels
+        run: tar -czf wheels.tar.gz dist/**/*.whl
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: wheels.tar.gz
+          tag_name: ${{ github.ref }}
+          name: ${{ github.ref }}
+          body: ${{ github.event.release.body }}
+          draft: false
+          prerelease: false
 
   publish:
       name: Publish to PyPI
-      # if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       needs: [windows, macos] # [linux, musllinux, windows, macos]
       runs-on: ubuntu-latest
       environment:
