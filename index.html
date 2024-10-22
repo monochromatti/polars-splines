@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Introduction - polars-splines</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="generator" content="mkdocs-1.6.1, mkdocs-gitbook-1.0.7">
+
+<link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="./css/style.min.css" rel="stylesheet"> 
+</head>
+
+<body>
+<div class="book">
+<div class="book-summary">
+
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href="." target="_blank" class="custom-link">polars-splines</a>
+</li>
+<li class="divider"></li>
+<li class="chapter active" data-path="">
+<a href=".">Introduction</a>
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+
+<section class="normal markdown-section">
+
+
+
+<h1 id="introduction">Introduction</h1>
+<p><code>polars-splines</code> is simple <a href="https://github.com/pola-rs/pyo3-polars">extension plugin</a> for <a href="https://github.com/pola-rs/polars">polars</a> Python API that uses the Rust cargo <a href="https://crates.io/crates/splines">splines</a> for spline interpolation.</p>
+<h2 id="installation">Installation</h2>
+<p>Install with <code>pip</code> or <code>uv</code> from <a href="https://pypi.org/project/polars-splines/">PyPI</a>, or build from source with <a href="https://github.com/PyO3/maturin"><code>maturin</code></a>.</p>
+<h2 id="usage">Usage</h2>
+<p>When importing the <code>polars_splines</code> module, Polars expressions will inherit a new namespace, <code>spl</code>. This contains the method <code>interpolate</code> which supports <code>Struct</code> columns with two fields, corresponding to the <em>points</em> on the graph of a function <span class="arithmatex">\(f\)</span>, i.e. <span class="arithmatex">\((x, f(x))\)</span>. The <code>interpolate</code> method takes an argument <code>xi</code> containing the evaluation points of the spline.</p>
+<h3 id="example">Example</h3>
+<pre><code class="language-python">import polars as pl
+import polars_splines
+import numpy as np
+
+x = pl.Series(&quot;x&quot;, np.linspace(0, 1, 100))
+y = pl.Series(&quot;y&quot;, np.sin(x))
+
+df = pl.DataFrame({&quot;x&quot;: x, &quot;y&quot;: y})
+
+xi = pl.Series(&quot;xi&quot;, np.linspace(0, 1, 1000))
+
+df = df.select(
+    pl.lit(xi).alias(&quot;xi&quot;),
+    pl.struct(&quot;x&quot;, &quot;y&quot;).spl.interpolate(xi, fill_value=0.0, method=&quot;catmullrom&quot;).alias(&quot;yi&quot;)
+)
+
+</code></pre>
+
+
+</section>
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="./js/main.js"></script>
+<script src="javascripts/mathjax.js"></script>
+<script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="./js/gitbook.min.js"></script>
+<script src="./js/theme.min.js"></script>
+</body>
+</html>
