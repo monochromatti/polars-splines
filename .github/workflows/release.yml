@@ -33,6 +33,7 @@ jobs:
 
   linux:
     name: Build wheels for Linux
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -69,6 +70,7 @@ jobs:
 
   musllinux:
     name: Build wheels for MuslLinux
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -101,6 +103,7 @@ jobs:
 
   windows:
     name: Build wheels for Windows
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -129,6 +132,7 @@ jobs:
 
   macos:
     name: Build wheels for macOS
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -180,7 +184,7 @@ jobs:
   publish:
       name: Publish to PyPI
       if: startsWith(github.ref, 'refs/tags/')
-      needs: [windows, macos] # [linux, musllinux, windows, macos]
+      needs: [linux, musllinux, windows, macos]
       runs-on: ubuntu-latest
       environment:
         name: release
