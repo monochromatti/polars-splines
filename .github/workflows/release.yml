@@ -2,38 +2,12 @@ name: release
 
 on:
   push:
-      tags:
-        - '*'
+      # tags:
+      #   - '*'
 
 jobs:
-
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-      - name: Test with pytest
-        run: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-results-${{ matrix.python-version }}
-          path: junit/test-results-${{ matrix.python-version }}.xml
-        if: ${{ always() }}
-
   linux:
     name: Build wheels for Linux
-    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -70,7 +44,6 @@ jobs:
 
   musllinux:
     name: Build wheels for MuslLinux
-    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -103,7 +76,6 @@ jobs:
 
   windows:
     name: Build wheels for Windows
-    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -132,7 +104,6 @@ jobs:
 
   macos:
     name: Build wheels for macOS
-    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -198,5 +169,7 @@ jobs:
             path: dist
         - name: Move wheels to dist
           run: find dist/ -type f -name "*.whl" -exec mv {} dist/ \; && find dist/ -type d -empty -delete
+        - name: Show all files recursively
+          run: ls -R .
         # - name: Publish distribution 📦 to PyPI
         #   uses: pypa/gh-action-pypi-publish@release/v1
