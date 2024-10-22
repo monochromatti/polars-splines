@@ -6,3 +6,4 @@ target/
 .direnv
 .devenv
 .envrc
+.pytest_cache
