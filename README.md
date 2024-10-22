@@ -1,6 +1,6 @@
 # Polars splines
 
-[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=readthedocs)](https://monochromatti.github.io/polars-splines/)
+[![Documentation](https://img.shields.io/badge/Documentation-black?logo=readthedocs)](https://monochromatti.github.io/polars-splines/)
 
 A simple [extension plugin](https://github.com/pola-rs/pyo3-polars) for [polars](https://github.com/pola-rs/polars) Python API that uses the Rust cargo [splines](https://crates.io/crates/splines) for spline interpolation.
 
