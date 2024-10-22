@@ -1,4 +1,4 @@
-# Polars splines
+# polars-splines: An expression plugin for Polars
 
 [![Documentation](https://img.shields.io/badge/Documentation-black?logo=readthedocs)](https://monochromatti.github.io/polars-splines/)
 
