@@ -13,11 +13,7 @@
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
         devenv.shells.default = {
-          packages = with pkgs; [ maturin ];
-          languages.python = {
-            enable = true;
-            uv.enable = true;
-          };
+          packages = with pkgs; [ maturin uv ];
           languages.rust.enable = true;
         };
       };
