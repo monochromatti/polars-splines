@@ -10,6 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
@@ -28,7 +29,6 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         target: [x86_64, i686, aarch64, armv7l, s390x, ppc64le]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
@@ -55,7 +55,6 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         target: [x86_64, i686, aarch64, armv7l]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
@@ -82,7 +81,6 @@ jobs:
     needs: [test]
     runs-on: windows-latest
     strategy:
-      fail-fast: false
       matrix:
         target: [x64, x86]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
@@ -108,7 +106,6 @@ jobs:
     needs: [test]
     runs-on: macos-latest
     strategy:
-      fail-fast: false
       matrix:
         target: [x86_64, aarch64]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
