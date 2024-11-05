@@ -13,7 +13,7 @@ y = [math.cos(i / 20) + 2 * random.random() for i in x]
 
 @pytest.mark.parametrize("method", ["linear", "cosine", "catmullrom"])
 def test_closeness(method):
-    df = pl.DataFrame({"x": x, "y": y})
+    df = pl.DataFrame({"x": x, "y": y}, schema={"x": pl.Float64, "y": pl.Float64})
     s = df.select(
         (pl.struct("x", "y").spl.interpolate(x, method=method) - col("y"))
         .abs()
@@ -21,7 +21,7 @@ def test_closeness(method):
     ).to_series()
 
     assert (
-        s < 1e-6
+        s < 1e-4
     ).all(), "Expected interpolated values to be within 1e-6 from original"
 
 

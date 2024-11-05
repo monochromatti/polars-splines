@@ -12,10 +12,8 @@ def linspace(start, stop, num):
 
 
 if __name__ == "__main__":
-    # Generate linearly spaced values for x
     x = pl.Series("x", linspace(0.0, 1.0, 250))
 
-    # Create the dataframe without numpy
     df = pl.concat(
         pl.DataFrame(
             dict(
